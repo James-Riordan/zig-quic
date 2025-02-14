@@ -1,6 +1,6 @@
 const std = @import("std");
 const Packet = @import("transport/packet.zig");
-const Connection = @import("transport/connection.zig");
+const Connection = @import("transport/connection.zig").Connection;
 
 pub const Error = error{
     ConnectionFailed,

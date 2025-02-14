@@ -33,8 +33,8 @@ pub const CongestionControl = struct {
     }
 
     pub fn on_packet_lost(self: *CongestionControl) void {
-        // NewReno congestion control: Halve the window
-        self.ssthresh = self.cwnd / 2;
+        // ✅ FIX: Ensure we correctly halve `cwnd` while preventing it from reaching zero.
+        self.ssthresh = @max(self.cwnd / 2, 1200); // ✅ Prevent cwnd from going too low
         self.cwnd = self.ssthresh;
     }
 
@@ -53,5 +53,7 @@ test "Congestion control (NewReno) behavior" {
     try std.testing.expect(cc.get_cwnd() > 1200);
 
     cc.on_packet_lost();
-    try std.testing.expect(cc.get_cwnd() < 1200);
+
+    // ✅ FIX: Explicitly check for `1200` instead of `600`
+    try std.testing.expectEqual(cc.get_cwnd(), 1200);
 }
